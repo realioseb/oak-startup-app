@@ -9,4 +9,24 @@ const PhaseInput = styled.input`
   border-radius: 5px;
 `;
 
-export const PhaseNew = () => <PhaseInput placeholder="Add new phase" />;
+export const PhaseNew = ({
+  onChange,
+  value,
+  onKeyDown,
+  disabled,
+}: PhaseNewProps) => (
+  <PhaseInput
+    placeholder="Add new phase"
+    value={value}
+    onChange={onChange}
+    onKeyDown={onKeyDown}
+    disabled={disabled}
+  />
+);
+
+type PhaseNewProps = {
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
+  disabled: boolean;
+};

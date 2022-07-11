@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import CheckIcon from '../assets/check.png';
+import { usePhaseRemove } from '../hooks/use-phase-remove';
 import { HoverActions } from './HoverActions';
 
 const PhaseContainer = styled.div`
@@ -40,14 +41,16 @@ const PhaseComplete = styled.div<{ isComplete: boolean }>`
   display: ${({ isComplete }) => (isComplete ? 'flex' : 'none')};
 `;
 
-export const PhaseHeader = ({ order, name, isComplete }: PhaseHeaderProps) => (
-  <PhaseContainer>
-    <PhaseIndex>{order}</PhaseIndex>
-    <PhaseName>{name}</PhaseName>
-    <PhaseComplete isComplete={isComplete} />
-    <HoverActions />
-  </PhaseContainer>
-);
+export const PhaseHeader = ({ order, name, isComplete }: PhaseHeaderProps) => {
+  return (
+    <PhaseContainer>
+      <PhaseIndex>{order}</PhaseIndex>
+      <PhaseName>{name}</PhaseName>
+      <PhaseComplete isComplete={isComplete} />
+      <HoverActions />
+    </PhaseContainer>
+  );
+};
 
 type PhaseHeaderProps = {
   order: number;

@@ -9,4 +9,5 @@ export type ITask = {
   id: number;
   name: string;
   isComplete: boolean;
+  phaseId: number;
 };

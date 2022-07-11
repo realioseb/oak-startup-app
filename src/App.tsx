@@ -1,41 +1,31 @@
+import { useCallback } from 'react';
+import { api } from './api';
 import { Card } from './components/Card';
 import { Header } from './components/Header';
 import { Phase } from './components/Phase';
 import { PhaseNew } from './components/PhaseNew';
+import { usePhaseInsert } from './hooks/use-phase-insert';
+import { usePhases } from './hooks/use-phases';
 
 function App() {
-  const phaseList = [
-    {
-      id: 1,
-      name: 'phase #1',
-      isComplete: true,
-      tasks: [
-        { id: 1, name: 'task 1/1', isComplete: true },
-        { id: 2, name: 'task 2/1', isComplete: true },
-        { id: 3, name: 'task 3/1', isComplete: true },
-      ],
-    },
-    {
-      id: 2,
-      name: 'phase #2',
-      isComplete: false,
-      tasks: [
-        { id: 4, name: 'task 1/2', isComplete: true },
-        { id: 5, name: 'task 2/2', isComplete: false },
-        { id: 6, name: 'task 3/3', isComplete: false },
-      ],
-    },
-  ];
+  const { phases, setPhases, isLoading, error } = usePhases();
+  const { name, onChange, onKeyDown, disabled } = usePhaseInsert(setPhases);
+
   return (
     <div className="App">
       <Card>
         <Header />
 
-        {phaseList.map((phase, index) => (
+        {phases.map((phase, index) => (
           <Phase key={phase.id} order={index + 1} phase={phase} />
         ))}
 
-        <PhaseNew />
+        <PhaseNew
+          value={name}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={onKeyDown}
+          disabled={disabled}
+        />
       </Card>
     </div>
   );
