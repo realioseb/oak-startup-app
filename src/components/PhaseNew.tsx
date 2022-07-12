@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const PhaseInput = styled.input`
@@ -9,24 +10,27 @@ const PhaseInput = styled.input`
   border-radius: 5px;
 `;
 
-export const PhaseNew = ({
-  onChange,
-  value,
-  onKeyDown,
-  disabled,
-}: PhaseNewProps) => (
-  <PhaseInput
-    placeholder="Add new phase"
-    value={value}
-    onChange={onChange}
-    onKeyDown={onKeyDown}
-    disabled={disabled}
-  />
-);
+export const PhaseNew = ({ onSubmit }: PhaseNewProps) => {
+  const [text, setText] = useState('');
+  const [disabled, setDisabled] = useState(false);
+  return (
+    <PhaseInput
+      placeholder="Add new phase"
+      value={text}
+      onChange={(e) => setText(e.currentTarget.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          setDisabled(true);
+          onSubmit(text)
+            .then(() => setText(''))
+            .finally(() => setDisabled(false));
+        }
+      }}
+      disabled={disabled}
+    />
+  );
+};
 
 type PhaseNewProps = {
-  value: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onKeyDown: React.KeyboardEventHandler<HTMLInputElement>;
-  disabled: boolean;
+  onSubmit: (name: string) => Promise<any>;
 };

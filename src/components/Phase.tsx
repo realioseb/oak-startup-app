@@ -10,11 +10,7 @@ const PhaseContainer = styled.div`
 export const Phase = ({ order, phase }: PhaseProps) => {
   return (
     <PhaseContainer>
-      <PhaseHeader
-        order={order}
-        name={phase.name}
-        isComplete={phase.isComplete}
-      />
+      <PhaseHeader order={order} phase={phase} />
       <TaskList tasks={phase.tasks} />
     </PhaseContainer>
   );

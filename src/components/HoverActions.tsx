@@ -28,9 +28,17 @@ const IconButton = styled.button<{ src: string }>`
   }
 `;
 
-export const HoverActions = () => (
+export const HoverActions = ({
+  onEditClick,
+  onDeleteClick,
+}: HoverActionsProps) => (
   <HoverContainer className="hover-actions">
-    <IconButton src={EditIcon} />
-    <IconButton src={DeleteIcon} />
+    <IconButton src={EditIcon} onClick={onEditClick} />
+    <IconButton src={DeleteIcon} onClick={onDeleteClick} />
   </HoverContainer>
 );
+
+type HoverActionsProps = {
+  onEditClick?: React.MouseEventHandler;
+  onDeleteClick?: React.MouseEventHandler;
+};

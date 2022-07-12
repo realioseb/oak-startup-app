@@ -105,6 +105,8 @@ export class StorageProvider implements IProvider {
     // TODO: remove tasks
     delete phases[id];
 
+    this.writePhases(phases);
+
     return removedPhase;
   }
 

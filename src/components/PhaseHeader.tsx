@@ -1,6 +1,8 @@
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import CheckIcon from '../assets/check.png';
-import { usePhaseRemove } from '../hooks/use-phase-remove';
+import { AppContext } from '../context/app-context';
+import { IPhase } from '../types';
 import { HoverActions } from './HoverActions';
 
 const PhaseContainer = styled.div`
@@ -8,7 +10,6 @@ const PhaseContainer = styled.div`
   height: 30px;
   padding: 10px;
   :hover {
-    background-color: #f1f1f1;
     > .hover-actions {
       display: flex;
     }
@@ -41,19 +42,52 @@ const PhaseComplete = styled.div<{ isComplete: boolean }>`
   display: ${({ isComplete }) => (isComplete ? 'flex' : 'none')};
 `;
 
-export const PhaseHeader = ({ order, name, isComplete }: PhaseHeaderProps) => {
+const PhaseNameInput = styled.input`
+  border: 1px solid #d5d5d5;
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: block;
+`;
+
+export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
+  const [text, setText] = useState(phase.name);
+  const { editPhase, setEditPhase, handlePhaseUpdate, setRemovePhase } =
+    useContext(AppContext);
+
   return (
     <PhaseContainer>
       <PhaseIndex>{order}</PhaseIndex>
-      <PhaseName>{name}</PhaseName>
-      <PhaseComplete isComplete={isComplete} />
-      <HoverActions />
+      {editPhase && editPhase.id === phase.id ? (
+        <PhaseNameInput
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.currentTarget.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handlePhaseUpdate(text).then(() => setEditPhase(null));
+            }
+
+            if (e.key === 'Escape') {
+              setEditPhase(null);
+            }
+          }}
+          onBlur={() => setEditPhase(null)}
+        />
+      ) : (
+        <PhaseName>{phase.name}</PhaseName>
+      )}
+
+      <PhaseComplete isComplete={phase.isComplete} />
+      <HoverActions
+        onEditClick={() => setEditPhase(phase)}
+        onDeleteClick={() => setRemovePhase(phase)}
+      />
     </PhaseContainer>
   );
 };
 
 type PhaseHeaderProps = {
   order: number;
-  name: string;
-  isComplete: boolean;
+  phase: IPhase;
 };
