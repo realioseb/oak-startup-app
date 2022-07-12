@@ -206,7 +206,6 @@ export class StorageProvider implements IProvider {
   async taskRemove(id: number): Promise<ITask> {
     const tasks = this.readTasks();
     const removedTask = tasks[id];
-    console.log(id, tasks);
 
     if (!removedTask) {
       throw new Error('task-not-found');

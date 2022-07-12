@@ -5,7 +5,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { api } from '../api';
+import { api, getRandomFact } from '../api';
 import { ITask } from '../types';
 
 interface ITaskContext {
@@ -93,21 +93,27 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
     return api.taskRemove(id);
   }, []);
 
-  const handleTaskComplete = useCallback(async (id: number) => {
-    const completedTask = await api.taskComplete(id);
+  const handleTaskComplete = useCallback(
+    async (id: number) => {
+      const completedTask = await api.taskComplete(id);
 
-    setTasks((tasks) => {
       const taskIndex = tasks.findIndex((task) => task.id === id);
 
       if (taskIndex !== -1) {
         tasks[taskIndex] = completedTask;
       }
 
-      return [...tasks];
-    });
+      setTasks([...tasks]);
 
-    return completedTask;
-  }, []);
+      if (tasks.reduce((res, task) => res && task.isComplete, true)) {
+        // TODO: use beautiful modal instead of the alert
+        getRandomFact().then((fact) => alert(fact.text));
+      }
+
+      return completedTask;
+    },
+    [tasks],
+  );
 
   const handleTaskIncomplete = useCallback(async (id: number) => {
     const incompletedTask = await api.taskIncomplete(id);
