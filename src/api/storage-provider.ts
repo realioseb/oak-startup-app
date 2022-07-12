@@ -38,6 +38,9 @@ export class StorageProvider implements IProvider {
   }
 
   private writePhases(phases: PhaseSerialized): void {
+    for (let key in phases) {
+      phases[key].tasks = [];
+    }
     localStorage.setItem(this.phaseKey, JSON.stringify(phases));
   }
 
@@ -55,23 +58,32 @@ export class StorageProvider implements IProvider {
     localStorage.setItem(this.taskKey, JSON.stringify(tasks));
   }
 
+  private incrementIndex(key: 'phaseLastIndex' | 'taskLastIndex') {
+    this[key]++;
+    localStorage.setItem(key, this[key].toString());
+    return this[key];
+  }
+
   async phaseList(): Promise<IPhase[]> {
     const phases = this.readPhases();
     return Object.values(phases);
   }
 
   async phaseInsert(name: string): Promise<IPhase> {
-    this.phaseLastIndex++;
-    localStorage.setItem('phaseLastIndex', this.phaseLastIndex.toString());
-
     const phase: IPhase = {
-      id: this.phaseLastIndex,
+      id: this.incrementIndex('phaseLastIndex'),
       name,
       isComplete: false,
       tasks: [],
     };
 
     const phases = this.readPhases();
+    const prevPhase = Object.values(phases).find((item) => !item.nextPhaseId);
+
+    if (prevPhase) {
+      prevPhase.nextPhaseId = phase.id;
+      phase.prevPhaseId = prevPhase.id;
+    }
 
     phases[phase.id] = phase;
 
@@ -105,6 +117,39 @@ export class StorageProvider implements IProvider {
     // TODO: remove tasks
     delete phases[id];
 
+    const tasks = this.readTasks();
+
+    for (let key in tasks) {
+      if (tasks[key].phaseId === id) {
+        delete tasks[key];
+      }
+    }
+
+    const { prevPhase, nextPhase } = Object.values(phases).reduce<{
+      prevPhase?: IPhase;
+      nextPhase?: IPhase;
+    }>((acc, item) => {
+      if (item.id === removedPhase.prevPhaseId) {
+        acc.prevPhase = item;
+      }
+
+      if (item.id === removedPhase.nextPhaseId) {
+        acc.nextPhase = item;
+      }
+
+      return acc;
+    }, {});
+
+    if (prevPhase && nextPhase) {
+      prevPhase.nextPhaseId = nextPhase.id;
+      nextPhase.prevPhaseId = prevPhase.id;
+    } else if (prevPhase) {
+      delete prevPhase.nextPhaseId;
+    } else if (nextPhase) {
+      delete nextPhase.prevPhaseId;
+    }
+
+    this.writeTasks(tasks);
     this.writePhases(phases);
 
     return removedPhase;
@@ -122,11 +167,10 @@ export class StorageProvider implements IProvider {
       throw new Error('phase-not-found');
     }
 
-    this.taskLastIndex++;
-    localStorage.setItem('taskLastIndex', this.taskLastIndex.toString());
+    const id = this.incrementIndex('taskLastIndex');
 
     const task: ITask = {
-      id: this.taskLastIndex,
+      id,
       name,
       isComplete: false,
       phaseId,
@@ -148,16 +192,21 @@ export class StorageProvider implements IProvider {
       throw new Error('task-not-found');
     }
 
-    tasks[id].name = name;
+    const task = Object.assign({}, tasks[id], {
+      name,
+    });
+
+    tasks[id] = task;
 
     this.writeTasks(tasks);
 
-    return [] as any;
+    return tasks[id];
   }
 
   async taskRemove(id: number): Promise<ITask> {
     const tasks = this.readTasks();
     const removedTask = tasks[id];
+    console.log(id, tasks);
 
     if (!removedTask) {
       throw new Error('task-not-found');
@@ -170,7 +219,6 @@ export class StorageProvider implements IProvider {
     return removedTask;
   }
 
-  // TODO: validate task completion
   async taskComplete(id: number): Promise<ITask> {
     const tasks = this.readTasks();
 
@@ -178,19 +226,47 @@ export class StorageProvider implements IProvider {
       throw new Error('task-not-found');
     }
 
-    tasks[id].isComplete = true;
+    const phases = this.readPhases();
+    const phase = phases[tasks[id].phaseId];
 
-    return tasks[id];
+    if (!phase) {
+      throw new Error('invalid-task-phase');
+    }
+
+    const prevPhase = Object.values(phases).find(
+      (item) => item.id === phase.prevPhaseId,
+    );
+
+    if (
+      prevPhase &&
+      !Object.values(tasks)
+        .filter((task) => task.phaseId === prevPhase.id)
+        .reduce((acc, item) => acc && item.isComplete, true)
+    ) {
+      throw new Error('prev-phase-ongoing');
+    }
+
+    return this.taskToggle(id, true);
   }
 
   async taskIncomplete(id: number): Promise<ITask> {
+    return this.taskToggle(id, false);
+  }
+
+  private taskToggle(id: number, isComplete: boolean) {
     const tasks = this.readTasks();
 
     if (!tasks[id]) {
       throw new Error('task-not-found');
     }
 
-    tasks[id].isComplete = false;
+    const task = Object.assign({}, tasks[id], {
+      isComplete,
+    });
+
+    tasks[id] = task;
+
+    this.writeTasks(tasks);
 
     return tasks[id];
   }

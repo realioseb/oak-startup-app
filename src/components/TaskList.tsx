@@ -10,17 +10,19 @@ const TaskListContainer = styled.div`
   flex-direction: column;
 `;
 
-export const TaskList = ({ tasks }: TaskListProps) => {
+export const TaskList = ({ tasks, phaseId, disabled }: TaskListProps) => {
   return (
     <TaskListContainer>
       {tasks.map((task) => (
-        <Task key={task.id} name={task.name} isComplete={task.isComplete} />
+        <Task key={task.id} task={task} disabled={disabled} />
       ))}
-      <TaskNew />
+      <TaskNew phaseId={phaseId} />
     </TaskListContainer>
   );
 };
 
 type TaskListProps = {
   tasks: ITask[];
+  phaseId: number;
+  disabled: boolean;
 };

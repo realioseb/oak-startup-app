@@ -70,6 +70,7 @@ export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
 
             if (e.key === 'Escape') {
               setEditPhase(null);
+              setText(phase.name);
             }
           }}
           onBlur={() => setEditPhase(null)}

@@ -35,12 +35,17 @@ const ModalButton = styled.button<{ white?: boolean }>`
   }
 `;
 
-export const Modal = ({ handleSubmit, handleCancel }: ModalProps) => {
+export const Modal = ({
+  message,
+  subMessage,
+  handleSubmit,
+  handleCancel,
+}: ModalProps) => {
   return (
     <ModalContainer>
       <ModalContent>
-        <h4>Are you sure to delete?</h4>
-        <span>All subtasks will be removed too</span>
+        <h4>{message}</h4>
+        <span>{subMessage}</span>
         <div style={{ marginTop: '35px' }}>
           <ModalButton
             onClick={handleSubmit}
@@ -60,6 +65,8 @@ export const Modal = ({ handleSubmit, handleCancel }: ModalProps) => {
 };
 
 type ModalProps = {
+  message: string;
+  subMessage: string;
   handleSubmit: React.MouseEventHandler;
   handleCancel: React.MouseEventHandler;
 };

@@ -5,6 +5,7 @@ import { Modal } from './components/Modal';
 import { Phase } from './components/Phase';
 import { PhaseNew } from './components/PhaseNew';
 import { PhaseContext } from './context/phase-context';
+import { TaskContext } from './context/task-context';
 
 function App() {
   const {
@@ -12,22 +13,46 @@ function App() {
     handlePhaseInsert,
     removePhase,
     setRemovePhase,
-    handlePhaseDelete,
+    handlePhaseRemove,
   } = useContext(PhaseContext);
 
-  const handleSubmit = useCallback(() => {
+  const { setTasks, removeTask, setRemoveTask, handleTaskRemove } =
+    useContext(TaskContext);
+
+  const handlePhaseSubmit = useCallback(() => {
     if (removePhase) {
-      handlePhaseDelete(removePhase.id);
+      handlePhaseRemove(removePhase.id);
+      setTasks((tasks) =>
+        tasks.filter((task) => task.phaseId !== removePhase.id),
+      );
       setRemovePhase(null);
     }
-  }, [removePhase, handlePhaseDelete, setRemovePhase]);
+  }, [removePhase, handlePhaseRemove, setRemovePhase, setTasks]);
+
+  const handleTaskSubmit = useCallback(() => {
+    if (removeTask) {
+      handleTaskRemove(removeTask.id);
+      setRemoveTask(null);
+    }
+  }, [removeTask, handleTaskRemove, setRemoveTask]);
 
   return (
     <div className="App">
       {!!removePhase && (
         <Modal
-          handleSubmit={handleSubmit}
+          message="Are you sure to delete the phase?"
+          subMessage="All phase tasks will be removed too"
+          handleSubmit={handlePhaseSubmit}
           handleCancel={() => setRemovePhase(null)}
+        />
+      )}
+
+      {!!removeTask && (
+        <Modal
+          message="Are you sure to delete the task?"
+          subMessage=""
+          handleSubmit={handleTaskSubmit}
+          handleCancel={() => setRemoveTask(null)}
         />
       )}
 

@@ -13,6 +13,7 @@ const PhaseInput = styled.input`
 export const PhaseNew = ({ onSubmit }: PhaseNewProps) => {
   const [text, setText] = useState('');
   const [disabled, setDisabled] = useState(false);
+
   return (
     <PhaseInput
       placeholder="Add new phase"

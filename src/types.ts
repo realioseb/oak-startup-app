@@ -3,6 +3,8 @@ export type IPhase = {
   name: string;
   isComplete: boolean;
   tasks: ITask[];
+  prevPhaseId?: number;
+  nextPhaseId?: number;
 };
 
 export type ITask = {
