@@ -21,6 +21,20 @@ const ModalContent = styled.div`
   max-width: 500px;
 `;
 
+const ModalButton = styled.button<{ white?: boolean }>`
+  cursor: pointer;
+  background: none;
+  border: none;
+  background-color: ${({ color }) => color};
+  color: ${({ white }) => (white ? 'white' : 'black')};
+  opacity: 0.8;
+  padding: 5px 10px;
+  margin: 0 10px;
+  :hover {
+    opacity: 1;
+  }
+`;
+
 export const Modal = ({ handleSubmit, handleCancel }: ModalProps) => {
   return (
     <ModalContainer>
@@ -28,12 +42,17 @@ export const Modal = ({ handleSubmit, handleCancel }: ModalProps) => {
         <h4>Are you sure to delete?</h4>
         <span>All subtasks will be removed too</span>
         <div style={{ marginTop: '35px' }}>
-          <button onClick={handleSubmit} type="button">
+          <ModalButton
+            onClick={handleSubmit}
+            type="button"
+            color="#ff0000"
+            white
+          >
             Confirm
-          </button>
-          <button onClick={handleCancel} type="button">
+          </ModalButton>
+          <ModalButton onClick={handleCancel} type="button" color="whitesmoke">
             Cancel
-          </button>
+          </ModalButton>
         </div>
       </ModalContent>
     </ModalContainer>
