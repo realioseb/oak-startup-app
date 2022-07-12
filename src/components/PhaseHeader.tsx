@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import CheckIcon from '../assets/check.png';
-import { AppContext } from '../context/app-context';
+import { PhaseContext } from '../context/phase-context';
 import { IPhase } from '../types';
 import { HoverActions } from './HoverActions';
 
@@ -53,7 +53,7 @@ const PhaseNameInput = styled.input`
 export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
   const [text, setText] = useState(phase.name);
   const { editPhase, setEditPhase, handlePhaseUpdate, setRemovePhase } =
-    useContext(AppContext);
+    useContext(PhaseContext);
 
   return (
     <PhaseContainer>

@@ -4,7 +4,7 @@ import { Header } from './components/Header';
 import { Modal } from './components/Modal';
 import { Phase } from './components/Phase';
 import { PhaseNew } from './components/PhaseNew';
-import { AppContext } from './context/app-context';
+import { PhaseContext } from './context/phase-context';
 
 function App() {
   const {
@@ -13,7 +13,7 @@ function App() {
     removePhase,
     setRemovePhase,
     handlePhaseDelete,
-  } = useContext(AppContext);
+  } = useContext(PhaseContext);
 
   const handleSubmit = useCallback(() => {
     if (removePhase) {

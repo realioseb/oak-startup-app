@@ -6,14 +6,12 @@ import {
   useState,
 } from 'react';
 import { api } from '../api';
-import { IPhase, ITask } from '../types';
+import { IPhase } from '../types';
 
-interface IAppContext {
+interface IPhaseContext {
   phases: IPhase[];
   editPhase: IPhase | null;
   setEditPhase: (phase: IPhase | null) => void;
-  editTask: ITask | null;
-  setEditTask: (task: ITask | null) => void;
   removePhase: IPhase | null;
   setRemovePhase: (phase: IPhase | null) => void;
   handlePhaseInsert: (name: string) => Promise<IPhase>;
@@ -21,12 +19,10 @@ interface IAppContext {
   handlePhaseDelete: (id: number) => Promise<void>;
 }
 
-export const AppContext = createContext<IAppContext>({
+export const PhaseContext = createContext<IPhaseContext>({
   phases: [],
   editPhase: null,
   setEditPhase: () => {},
-  editTask: null,
-  setEditTask: () => {},
   removePhase: null,
   setRemovePhase: () => {},
   handlePhaseInsert: async () => ({} as any),
@@ -34,7 +30,7 @@ export const AppContext = createContext<IAppContext>({
   handlePhaseDelete: async () => {},
 });
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
+export const PhaseProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [phases, setPhases] = useState<IPhase[]>([]);
@@ -52,8 +48,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [editPhase, setEditPhase] = useState<IPhase | null>(null);
   const [removePhase, setRemovePhase] = useState<IPhase | null>(null);
-
-  const [editTask, setEditTask] = useState<ITask | null>(null);
 
   const handlePhaseInsert = useCallback(async (name: string) => {
     const newPhase = await api.phaseInsert(name);
@@ -94,8 +88,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       handlePhaseInsert,
       handlePhaseUpdate,
       handlePhaseDelete,
-      editTask,
-      setEditTask,
     }),
     [
       phases,
@@ -104,9 +96,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       handlePhaseInsert,
       handlePhaseUpdate,
       handlePhaseDelete,
-      editTask,
     ],
   );
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <PhaseContext.Provider value={value}>{children}</PhaseContext.Provider>
+  );
 };
