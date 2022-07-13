@@ -55,8 +55,8 @@ export const PhaseProvider: React.FC<{ children: React.ReactNode }> = ({
     setPhases((current) => {
       const last = current[current.length - 1];
       if (last) {
-        last.nextPhaseId = newPhase.prevPhaseId;
-        newPhase.nextPhaseId = last.nextPhaseId;
+        last.nextPhaseId = newPhase.id;
+        newPhase.prevPhaseId = last.id;
       }
       return [...current, newPhase];
     });

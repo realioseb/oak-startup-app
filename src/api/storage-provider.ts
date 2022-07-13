@@ -21,26 +21,10 @@ export class StorageProvider implements IProvider {
       return {};
     }
 
-    const phases: PhaseSerialized = JSON.parse(phasesEncoded);
-
-    const tasksEncoded = localStorage.getItem(this.taskKey);
-
-    if (tasksEncoded) {
-      const tasks: TaskSerialized = JSON.parse(tasksEncoded);
-
-      for (let taskId in tasks) {
-        const task = tasks[taskId];
-        phases[task.phaseId].tasks.push(task);
-      }
-    }
-
-    return phases;
+    return JSON.parse(phasesEncoded) as PhaseSerialized;
   }
 
   private writePhases(phases: PhaseSerialized): void {
-    for (let key in phases) {
-      phases[key].tasks = [];
-    }
     localStorage.setItem(this.phaseKey, JSON.stringify(phases));
   }
 
@@ -74,7 +58,6 @@ export class StorageProvider implements IProvider {
       id: this.incrementIndex('phaseLastIndex'),
       name,
       isComplete: false,
-      tasks: [],
     };
 
     const phases = this.readPhases();

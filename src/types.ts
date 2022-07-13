@@ -2,7 +2,6 @@ export type IPhase = {
   id: number;
   name: string;
   isComplete: boolean;
-  tasks: ITask[];
   prevPhaseId?: number;
   nextPhaseId?: number;
 };

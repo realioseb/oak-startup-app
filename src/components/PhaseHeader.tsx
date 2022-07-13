@@ -50,7 +50,7 @@ const PhaseNameInput = styled.input`
   display: block;
 `;
 
-export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
+export const PhaseHeader = ({ phase, order, isComplete }: PhaseHeaderProps) => {
   const [text, setText] = useState(phase.name);
   const { editPhase, setEditPhase, handlePhaseUpdate, setRemovePhase } =
     useContext(PhaseContext);
@@ -79,7 +79,7 @@ export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
         <PhaseName>{phase.name}</PhaseName>
       )}
 
-      <PhaseComplete isComplete={phase.isComplete} />
+      <PhaseComplete isComplete={isComplete} />
       <HoverActions
         onEditClick={() => setEditPhase(phase)}
         onDeleteClick={() => setRemovePhase(phase)}
@@ -91,4 +91,5 @@ export const PhaseHeader = ({ phase, order }: PhaseHeaderProps) => {
 type PhaseHeaderProps = {
   order: number;
   phase: IPhase;
+  isComplete: boolean;
 };

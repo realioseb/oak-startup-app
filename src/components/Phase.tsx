@@ -17,9 +17,18 @@ export const Phase = ({ order, phase }: PhaseProps) => {
     [tasks, phase.id],
   );
 
+  const phaseDone = useMemo(() => {
+    for (let i = 0; i < ownTasks.length; i++) {
+      if (!ownTasks[i].isComplete) {
+        return false;
+      }
+    }
+    return true;
+  }, [ownTasks]);
+
   return (
     <PhaseContainer>
-      <PhaseHeader order={order} phase={phase} />
+      <PhaseHeader order={order} phase={phase} isComplete={phaseDone} />
       <TaskList
         phaseId={phase.id}
         tasks={ownTasks}

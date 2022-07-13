@@ -1,4 +1,5 @@
-const URL = 'https://uselessfacts.jsph.pl/random.json';
+const URL =
+  process.env.REACT_APP_FACTS_URL || 'https://uselessfacts.jsph.pl/random.json';
 
 type RandomFactType = {
   id: string;
