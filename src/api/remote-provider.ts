@@ -33,6 +33,7 @@ type TaskGQL = {
   };
 };
 
+// NOTE: I could use apollo client hooks and in-memory cache but I wanted to unify data providers.
 export class RemoteProvider implements IProvider {
   private readonly gqlUri =
     process.env.REACT_APP_REMOTE_API || 'http://localhost:8000';
