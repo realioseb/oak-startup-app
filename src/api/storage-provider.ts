@@ -54,6 +54,10 @@ export class StorageProvider implements IProvider {
   }
 
   async phaseInsert(name: string): Promise<IPhase> {
+    if (!name) {
+      throw new Error('name-required');
+    }
+
     const phase: IPhase = {
       id: this.incrementIndex('phaseLastIndex'),
       name,
@@ -76,6 +80,10 @@ export class StorageProvider implements IProvider {
   }
 
   async phaseUpdate(id: number, name: string): Promise<IPhase> {
+    if (!name) {
+      throw new Error('name-required');
+    }
+
     const phases = this.readPhases();
 
     if (!phases[id]) {
@@ -144,6 +152,10 @@ export class StorageProvider implements IProvider {
   }
 
   async taskInsert(name: string, phaseId: number): Promise<ITask> {
+    if (!name) {
+      throw new Error('name-required');
+    }
+
     const phases = this.readPhases();
 
     if (!phases[phaseId]) {
@@ -169,6 +181,10 @@ export class StorageProvider implements IProvider {
   }
 
   async taskUpdate(id: number, name: string): Promise<ITask> {
+    if (!name) {
+      throw new Error('name-required');
+    }
+
     const tasks = this.readTasks();
 
     if (!tasks[id]) {

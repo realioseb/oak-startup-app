@@ -51,6 +51,10 @@ export const PhaseProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const handlePhaseInsert = useCallback(async (name: string) => {
+    if (!name) {
+      throw new Error('name-required');
+    }
+
     const newPhase = await api.phaseInsert(name);
     setPhases((current) => {
       const last = current[current.length - 1];
@@ -65,6 +69,10 @@ export const PhaseProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handlePhaseUpdate = useCallback(
     async (name: string) => {
+      if (!name) {
+        throw new Error('name-required');
+      }
+
       if (editPhase) {
         const phaseUpdated = await api.phaseUpdate(editPhase.id, name);
         setPhases((phases) => {

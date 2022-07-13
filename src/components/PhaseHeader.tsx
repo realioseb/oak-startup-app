@@ -65,15 +65,18 @@ export const PhaseHeader = ({ phase, order, isComplete }: PhaseHeaderProps) => {
           onChange={(e) => setText(e.currentTarget.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              if (!text) {
+                alert('Phase name is required');
+                return;
+              }
+
               handlePhaseUpdate(text).then(() => setEditPhase(null));
             }
 
             if (e.key === 'Escape') {
               setEditPhase(null);
-              setText(phase.name);
             }
           }}
-          onBlur={() => setEditPhase(null)}
         />
       ) : (
         <PhaseName>{phase.name}</PhaseName>
@@ -81,7 +84,10 @@ export const PhaseHeader = ({ phase, order, isComplete }: PhaseHeaderProps) => {
 
       <PhaseComplete isComplete={isComplete} />
       <HoverActions
-        onEditClick={() => setEditPhase(phase)}
+        onEditClick={() => {
+          setEditPhase(phase);
+          setText(phase.name);
+        }}
         onDeleteClick={() => setRemovePhase(phase)}
       />
     </PhaseContainer>

@@ -21,6 +21,11 @@ export const PhaseNew = ({ onSubmit }: PhaseNewProps) => {
       onChange={(e) => setText(e.currentTarget.value)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
+          if (!text) {
+            alert('Phase name is required');
+            return;
+          }
+
           setDisabled(true);
           onSubmit(text)
             .then(() => setText(''))

@@ -66,12 +66,16 @@ export const Task = ({ task, disabled }: TaskProps) => {
           onChange={(e) => setText(e.currentTarget.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
+              if (!text) {
+                alert('Task name is required');
+                return;
+              }
+
               handleTaskUpdate(text).then(() => setEditTask(null));
             }
 
             if (e.key === 'Escape') {
               setEditTask(null);
-              setText(task.name);
             }
           }}
           onBlur={() => setEditTask(null)}
@@ -80,7 +84,10 @@ export const Task = ({ task, disabled }: TaskProps) => {
         <TaskName title={task.name}>{task.name}</TaskName>
       )}
       <HoverActions
-        onEditClick={() => setEditTask(task)}
+        onEditClick={() => {
+          setEditTask(task);
+          setText(task.name);
+        }}
         onDeleteClick={() => setRemoveTask(task)}
       />
     </TaskContainer>

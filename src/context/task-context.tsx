@@ -58,6 +58,10 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleTaskInsert = useCallback(
     async (name: string, phaseId: number) => {
+      if (!name) {
+        throw new Error('name-required');
+      }
+
       const task = await api.taskInsert(name, phaseId);
       setTasks((tasks) => [...tasks, task]);
       return task;
@@ -67,6 +71,10 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const handleTaskUpdate = useCallback(
     async (name: string) => {
+      if (!name) {
+        throw new Error('name-required');
+      }
+
       if (editTask) {
         const taskUpdated = await api.taskUpdate(editTask.id, name);
 

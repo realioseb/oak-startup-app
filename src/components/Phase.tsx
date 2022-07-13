@@ -18,11 +18,16 @@ export const Phase = ({ order, phase }: PhaseProps) => {
   );
 
   const phaseDone = useMemo(() => {
+    if (!ownTasks.length) {
+      return false;
+    }
+
     for (let i = 0; i < ownTasks.length; i++) {
       if (!ownTasks[i].isComplete) {
         return false;
       }
     }
+
     return true;
   }, [ownTasks]);
 

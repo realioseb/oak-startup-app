@@ -25,6 +25,11 @@ export const TaskNew = ({ phaseId }: { phaseId: number }) => {
       onChange={(e) => setText(e.currentTarget.value)}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
+          if (!text) {
+            alert('Task name is required');
+            return;
+          }
+
           setDisabled(true);
           handleTaskInsert(text, phaseId)
             .then(() => setText(''))
